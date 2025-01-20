@@ -10,14 +10,15 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {
+  const version = JSON.parse(readFileSync(join("package.json"), 'utf-8')).version;
+  process.env.VERSION = version;
   const app = await NestFactory.create(AppModule);
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
   const port = process.env.PORT || 2025;
-  process.env.VERSION = JSON.parse(readFileSync(join("package.json"), 'utf-8')).version;
   await app.listen(port);
   Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
+    `🚀 Application v${version} is running on: http://localhost:${port}/${globalPrefix}`
   );
 }
 
