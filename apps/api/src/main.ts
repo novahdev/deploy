@@ -9,9 +9,17 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { ResponseInterceptor } from '@deploy/api/config';
-import { ConfigService } from '@deploy/api/config';
+import { ConfigService, initDb } from '@deploy/api/config';
 
 async function bootstrap() {
+
+  try{
+    await initDb()
+  } catch(error){
+    Logger.error(`[APP] No se cargar la base de datos: ${ error.message }`);
+    process.exit(1);
+  }
+
   const version = JSON.parse(readFileSync(join("package.json"), 'utf-8')).version;
   process.env.VERSION = version;
   const app = await NestFactory.create(AppModule);
