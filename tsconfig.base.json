@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@deploy/api/*": ["apps/api/src/app/*"]
+      "@deploy/api/*": ["apps/api/src/app/*"],
+      "@deploy/schemas/*": ["packages/schemas/src/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]
