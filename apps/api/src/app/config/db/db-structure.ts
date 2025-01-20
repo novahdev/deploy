@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS users
 (
     id TEXT,
     createdAt TEXT,
-    updateAt TEXT,
+    updatedAt TEXT,
     role TEXT,
     name TEXT,
     email TEXT,
