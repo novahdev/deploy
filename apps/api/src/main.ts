@@ -10,6 +10,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { ResponseInterceptor } from '@deploy/api/config';
 import { ConfigService, initDb } from '@deploy/api/config';
+import { AllExceptionsFilter } from './app/config/interceptors/all-exception-filter';
 
 async function bootstrap() {
 
@@ -24,7 +25,8 @@ async function bootstrap() {
   process.env.VERSION = version;
   const app = await NestFactory.create(AppModule);
   const globalPrefix = 'api';
-  app.useGlobalInterceptors(new ResponseInterceptor(app.get(ConfigService)))
+  app.useGlobalFilters(new AllExceptionsFilter(app.get(ConfigService)));
+  app.useGlobalInterceptors(new ResponseInterceptor(app.get(ConfigService)));
   app.setGlobalPrefix(globalPrefix);
   const port = process.env.PORT || 2025;
   await app.listen(port);
