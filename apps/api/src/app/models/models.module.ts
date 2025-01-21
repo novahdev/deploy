@@ -6,6 +6,6 @@ import { ProjectsService } from './projects/projects.service';
 @Global()
 @Module({
   providers: [UsersService, TokensService, ProjectsService],
-  exports: [UsersService]
+  exports: [UsersService, TokensService, ProjectsService]
 })
 export class ModelsModule {}
