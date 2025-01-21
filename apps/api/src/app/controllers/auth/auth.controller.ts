@@ -1,10 +1,10 @@
-import { UsersService } from '@deploy/api/models/users';
 import { Body, Controller, Headers, HttpException, Ip, Post, UseGuards } from '@nestjs/common';
-import { CredentialsDto } from './dto';
-import { verify } from 'argon2';
-import { UAParser } from 'ua-parser-js';
+import { UsersService } from '@deploy/api/models/users';
 import { TokensService } from '@deploy/api/models/tokens';
 import { AppSession, Authenticated, AuthGuard } from '@deploy/api/auth';
+import { verify } from 'argon2';
+import { UAParser } from 'ua-parser-js';
+import { CredentialsDto } from './dto';
 
 @Controller()
 export class AuthController {
