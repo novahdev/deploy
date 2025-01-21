@@ -25,4 +25,9 @@ export class AppSession implements ITokenAuth {
         const s = await getService(TokensService);
         await s.update(this.token, { exp: null });
     }
+
+    public async logout(): Promise<void>{
+        const s = await getService(TokensService);
+        await s.delete(this.token);
+    }
 }
