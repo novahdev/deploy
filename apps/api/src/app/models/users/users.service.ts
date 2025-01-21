@@ -8,7 +8,7 @@ import { hash } from 'argon2';
 export class UsersService {
     constructor(private readonly _db: DbService){}
 
-    public async create(data: { role: "admin" | "collaborator", name: string, email: string }): Promise<IUserPlaintData> {
+    public async create(data: { role: "admin" | "collaborator", name: string, email: string, password?: string }): Promise<IUserPlaintData> {
         const user: IUserPlaintData = {
             id: crypto.randomUUID(),
             createdAt: new Date().toISOString(),
@@ -16,7 +16,7 @@ export class UsersService {
             role: data.role,
             name: data.name,
             email: data.email,
-            password: await hash("admin")
+            password: data.password ?? await hash("admin")
         }
         const conn = await this._db.getConnection();
         const values = Object.values(user);
