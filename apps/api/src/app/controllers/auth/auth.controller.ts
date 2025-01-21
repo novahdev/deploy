@@ -54,4 +54,10 @@ export class AuthController {
     async keepSessionOpen(@Authenticated() session: AppSession){
         await session.keepSessionOpen();
     }
+    
+    @UseGuards(AuthGuard)
+    @Post("logout")
+    async logout(@Authenticated() session: AppSession){
+        await session.logout();
+    }
 }
