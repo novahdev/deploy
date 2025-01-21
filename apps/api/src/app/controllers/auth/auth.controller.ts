@@ -1,9 +1,10 @@
 import { UsersService } from '@deploy/api/models/users';
-import { Body, Controller, Headers, HttpException, Ip, Post } from '@nestjs/common';
+import { Body, Controller, Headers, HttpException, Ip, Post, UseGuards } from '@nestjs/common';
 import { CredentialsDto } from './dto';
 import { verify } from 'argon2';
 import { UAParser } from 'ua-parser-js';
 import { TokensService } from '@deploy/api/models/tokens';
+import { AppSession, Authenticated, AuthGuard } from '@deploy/api/auth';
 
 @Controller()
 export class AuthController {
@@ -46,5 +47,11 @@ export class AuthController {
                 token: token.id
             }
         }
+    }
+
+    @UseGuards(AuthGuard)
+    @Post("keep-session-open")
+    async keepSessionOpen(@Authenticated() session: AppSession){
+        await session.keepSessionOpen();
     }
 }
