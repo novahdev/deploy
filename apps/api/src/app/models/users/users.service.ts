@@ -1,8 +1,9 @@
 import { DbService } from '@deploy/api/common/db';
 import { Injectable } from '@nestjs/common';
-import { IUserPlaintData, IUserUpdate } from './user.interface';
+import { IUserPlaintData, IUserUpdate, IUserUpdatePlaint } from './user.interface';
 import { isUUID } from 'class-validator';
 import { hash } from 'argon2';
+import { User } from './user.model';
 
 @Injectable()
 export class UsersService {
@@ -26,10 +27,13 @@ export class UsersService {
         return user;
     }
 
-    public async get(value: string): Promise<IUserPlaintData | undefined> {
+    public async get(value: string): Promise<User | undefined> {
         const conn = await this._db.getConnection();
         const res = await conn.get<IUserPlaintData | undefined>(`SELECT * FROM users WHERE ${isUUID(value) ? 'id' : 'email'} = ?`, [value]);
         conn.close();
+        if (res){
+            return new User(res, this);
+        }
         return res;
     }
 
@@ -45,16 +49,25 @@ export class UsersService {
         return list;
     }
 
-    public async update(id: string, data: { email?: string, name?: string, role?: "admin" | "collaborator", password?: string }): Promise<void> {
-        const update: IUserUpdate = {};
+    public async update(id: string, data: { email?: string, name?: string, role?: "admin" | "collaborator", password?: string }): Promise<IUserUpdate> {
+        const update: IUserUpdatePlaint = {};
+        const updateAt = new Date();
         if (data.email) update.email = data.email.toLowerCase();
         if (data.name) update.name = data.name;
         if (data.role) update.role = data.role;
         if (data.password) update.password = await hash(data.password);
+        update.updatedAt = updateAt.toISOString()
         const sql = `UPDATE users SET ${Object.keys(update).map(x => `${x} = ?`).join(", ")} WHERE id = ?`;
         const conn = await this._db.getConnection();
         await conn.run({ sql, values: [...Object.values(update), id] })
         conn.close();
+        return {
+            updatedAt: updateAt,
+            role: update.role,
+            name: update.name,
+            email: update.email,
+            password: update.password
+        };
     }
 
     public async delete(id: string): Promise<void> {
