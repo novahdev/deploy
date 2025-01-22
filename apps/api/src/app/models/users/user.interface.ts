@@ -25,3 +25,10 @@ export interface IUserUpdate {
     email?: string
     password?: string
 }
+export interface IUserUpdatePlaint {
+    updatedAt?: string
+    role?: "admin" | "collaborator"
+    name?: string
+    email?: string
+    password?: string
+}
