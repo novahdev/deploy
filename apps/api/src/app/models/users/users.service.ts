@@ -21,7 +21,7 @@ export class UsersService {
         }
         const conn = await this._db.getConnection();
         const values = Object.values(user);
-        const sql = `INSERT INTO users(${Object.keys(data).join(", ")}) VALUES(${Array(values.length).fill('?').join(',')})`;
+        const sql = `INSERT INTO users(${Object.keys(user).join(", ")}) VALUES(${Array(values.length).fill('?').join(',')})`;
         await conn.run({ sql, values });
         conn.close();
         return user;
@@ -73,5 +73,15 @@ export class UsersService {
     public async delete(id: string): Promise<void> {
         const conn = await this._db.getConnection();
         await conn.run({ sql: "DELETE FROM users WHERE id = ?", values: [id] });
+    }
+
+    public async emailAvailable(email: string): Promise<boolean> { 
+        const conn = await this._db.getConnection();
+        const res = await conn.get<{ email: string } | undefined>("SELECT email FROM users WHERE email = ?", [email]);
+        conn.close();
+        if (res){
+            return false;
+        }
+        return true;
     }
 }
