@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users
     updatedAt TEXT,
     role TEXT,
     name TEXT,
-    email TEXT,
+    email TEXT UNIQUE,
     password TEXT
 );
 
