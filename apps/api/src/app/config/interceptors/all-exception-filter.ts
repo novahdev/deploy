@@ -21,7 +21,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
         error.message = exception.message;
       } else {
         error.code = res["code"];
-        error.message = exception.message;
+        error.message = res["message"];
+        error.details = res["details"];
       }
     } else if (exception instanceof Error) {
       error.message = exception.message;
@@ -31,7 +32,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     response.status(status).json({
       version: this._config.version,
       status_code: status,
-      message: exception instanceof HttpException ? exception.message : 'Internal server error',
+      message: exception instanceof HttpException ? exception.getResponse()["message"] : 'Internal server error',
       error: error,
       support: {
         email: "support.deploy@novah.dev",
