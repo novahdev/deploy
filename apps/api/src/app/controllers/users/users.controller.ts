@@ -1,10 +1,11 @@
-import { AppSession, Authenticated, AuthGuard } from '@deploy/api/auth';
+import { Admin, AppSession, Authenticated, AuthGuard } from '@deploy/api/auth';
 import { UserPipe, UsersService, User } from '@deploy/api/models/users';
 import { Body, Controller, Delete, Get, HttpException, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @UseGuards(AuthGuard)
+@Admin()
 @Controller('users')
 export class UsersController {
     constructor(private readonly _users: UsersService){}
@@ -44,6 +45,9 @@ export class UsersController {
 
     @Post()
     async create(@Body() body: CreateUserDto): Promise<{ data: { id: string, name: string, email: string } }> {
+        if (!(await this._users.emailAvailable(body.email))){
+            throw new HttpException("El correo ya esta en uso.", 400);
+        }
         const user = await  this._users.create({
             role: "collaborator",
             name: body.name,
