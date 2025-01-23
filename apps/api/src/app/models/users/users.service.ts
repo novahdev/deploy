@@ -17,7 +17,7 @@ export class UsersService {
             role: data.role,
             name: data.name,
             email: data.email,
-            password: data.password ?? await hash("admin")
+            password: await hash(data.password ?? "admin")
         }
         const conn = await this._db.getConnection();
         const values = Object.values(user);
