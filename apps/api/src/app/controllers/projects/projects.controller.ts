@@ -6,6 +6,8 @@ import { ProjectUpdateDto } from './dto/project-update.dto';
 import { Pm2Process, Pm2Service } from '@deploy/api/common/pm2';
 import { isApplicationOnline } from '@deploy/api/utils';
 import { ApiProjectRaw } from '@deploy/schemas/projects';
+import { join } from 'path';
+import { existsSync } from 'fs';
 
 @UseGuards(AuthGuard)
 @Controller('projects')
@@ -142,5 +144,77 @@ export class ProjectsController {
         return {
             message: "Proyecto eliminado."
         }
+    }
+
+    @Post(":id/run")
+    async runProject(@Authenticated() session: AppSession, @Param("id", ProjectPipe) project: IProject) {
+        if (session.role !== "admin"){
+            throw new HttpException("No tienes permisos para ejecutar el proyecto", 403);
+        }
+
+        if (project.runningOn === "PM2"){
+            if (!this._pm2.installed()){
+                throw new HttpException("PM2 no esta instalado en el servidor.", 500);
+            }
+            const startupFilePath = join(project.location, project.startupFile);
+            if (!existsSync(startupFilePath)){
+                throw new HttpException({ 
+                    message: "El archivo de inicio no existe.",
+                    details: [ `El archivo "${startupFilePath}" no existe.`]
+                }, 500);
+            }
+
+            const process = this._pm2.getAll().find(x => x.name === project.processName);
+            if (process){
+                if (process.pm2_env.status === "online"){
+                    throw new HttpException("El proceso ya esta en ejecución.", 400);
+                }
+            } else {
+                this._pm2.start(project.location, project.startupFile, project.processName, project.env);
+            }
+
+            const status = this._pm2.get(project.processName)?.pm2_env.status;
+            const isOnline = project.url ? await isApplicationOnline(project.url) : false;
+
+            return {
+                message: status === "online" ? "Proyecto en ejecución." : "Proyecto en cola.",
+                data: {
+                    status,
+                    is_online: isOnline
+                }
+            }
+        } else if (project.runningOn === null) {
+            return {
+                message: "Proyecto en ejecución."
+            }
+        }
+        throw new HttpException(`No hay soporte para aplicaciones ejecutadas en ${project.runningOn}.`, 500);
+    }
+
+    @Post(":id/stop")
+    async stopProject(@Authenticated() session: AppSession, @Param("id", ProjectPipe) project: IProject) {
+        if (session.role !== "admin"){
+            throw new HttpException("No tienes permisos para detener el proyecto", 403);
+        }
+
+        if (project.runningOn === "PM2"){
+            if (!this._pm2.installed()){
+                throw new HttpException("PM2 no esta instalado en el servidor.", 500);
+            }
+            const process = this._pm2.getAll().find(x => x.name === project.processName);
+            if (process){
+                if (process.pm2_env.status === "online"){
+                    this._pm2.stop(project.processName);
+                    return {
+                        message: "Proyecto detenido."
+                    }
+                }
+                throw new HttpException("El proceso no esta en ejecución.", 400);
+            }
+            throw new HttpException("El proceso no existe.", 400);
+        } else if (project.runningOn === null) {
+            throw new HttpException("El proyecto no se puede detener.", 400);
+        }
+        throw new HttpException(`No hay soporte para aplicaciones ejecutadas en ${project.runningOn}.`, 500);
     }
 }
