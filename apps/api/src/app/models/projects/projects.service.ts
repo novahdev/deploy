@@ -1,6 +1,6 @@
 import { DbService } from '@deploy/api/common/db';
 import { Injectable } from '@nestjs/common';
-import { IProject, IProjectPlaitData, ProjectCreateValues, ProjectUpdateValues } from './projects.interfaces';
+import { IProject, IProjectPlaitData, ProjectCreateValues, ProjectUpdateValues, ProjectUpdateValuesPlaint } from './projects.interfaces';
 
 @Injectable()
 export class ProjectsService {
@@ -26,12 +26,19 @@ export class ProjectsService {
             ignore: JSON.parse(data.ignore),
             observation: data.observation,
             repository: data.repository ? JSON.parse(data.repository) : null,
+            permissions: data.permissions ? JSON.parse(data.permissions) : [],
+            status: "stopped",
+            isOnline: false
         }
     }
 
-    public async getAll(): Promise<IProject[]> {
+    public async getAll(filter?: { userId?: string }): Promise<IProject[]> {
         const conn = await this._db.getConnection();
-        const result = await conn.all<IProjectPlaitData[]>("SELECT * FROM projects");
+        let sql = "SELECT * FROM projects";
+        if (filter?.userId){
+            sql = `SELECT a.*, b.permissions FROM projects a INNER JOIN projects_users b ON a.id = b.projectId WHERE b.userId = ?`;
+        } 
+        const result = await conn.all<IProjectPlaitData[]>(sql, filter?.userId ? [filter.userId] : []);
         conn.close();
         return result.map(x => this.parse(x));
     }
@@ -69,11 +76,11 @@ export class ProjectsService {
         const sql = `INSERT INTO projects(${Object.keys(project).join(", ")}) VALUES(${Array(values.length).fill('?').join(',')});`;
         await conn.run({ sql, values });
         conn.close();
-        return project;
+        return this.parse(project);
     }
 
     public async update(id: string, data: ProjectUpdateValues): Promise<void> {
-        const values: ProjectUpdateValues = {};
+        const values: ProjectUpdateValuesPlaint = {};
         if (data.domain)  values.domain = data.domain.trim();
         if (data.name) values.name = data.name.trim();
         if (data.version) values.version = data.version;
@@ -103,8 +110,8 @@ export class ProjectsService {
     }
 
     public async isAvailableName(name: string, domain: string, ignore?: string): Promise<boolean> {
-        let sql = `SELECT COUNT(*) as count FROM projects WHERE domain = ? AND NAME = ?`;
-        const params = [name, domain]
+        let sql = `SELECT COUNT(*) as count FROM projects WHERE domain = ? AND name = ?`;
+        const params = [domain, name]
         if (ignore){
             sql += " AND  id <> ?";
             params.push(ignore);
