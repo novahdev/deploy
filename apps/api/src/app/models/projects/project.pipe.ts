@@ -7,7 +7,10 @@ import { ProjectsService } from './projects.service';
 export class ProjectPipe implements PipeTransform {
   async transform(value: string) {
     if (!isUUID(value)){
-      throw new HttpException("Formato de parámetro incorrecto", 404);
+      throw new HttpException({ 
+        message: "El id del proyecto no es valido.",
+        details: [`El id "${value}" no es un UUID valido.`]
+      }, 404);
     }
     
     const projectsService = await getService(ProjectsService);
