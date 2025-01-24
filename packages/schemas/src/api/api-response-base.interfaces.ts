@@ -1,10 +1,9 @@
-export interface ApiResponseBase<T> {
+export interface ApiResponseBase {
     version: string;
     status_code: number;
-    message: string | string[];
-    warning: string | string[];
-    status: number;
-    data: T;
+    message?: string | string[];
+    warning?: string | string[];
+    status?: number;
     error?: {
         code: string;
         message: string;
