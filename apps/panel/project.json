@@ -22,7 +22,10 @@
             "input": "apps/panel/public"
           }
         ],
-        "styles": ["apps/panel/src/styles.scss"],
+        "styles": [
+          "apps/panel/src/styles.scss",
+          "apps/panel/src/styles.less"
+        ],
         "scripts": []
       },
       "configurations": {
