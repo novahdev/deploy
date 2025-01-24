@@ -15,8 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@deploy/core/*": ["packages/core/src/*"],
       "@deploy/api/*": ["apps/api/src/app/*"],
+      "@deploy/core/*": ["packages/core/src/*"],
+      "@deploy/panel/*": ["apps/panel/src/app/*"],
       "@deploy/schemas/*": ["packages/schemas/src/*"]
     }
   },
