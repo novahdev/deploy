@@ -1,1 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+    --app-palette-background-default: hsl(210, 14%, 7%);
+    --app-palette-background-paper: hsla(210, 14%, 9%, 0.8);
+    --app-palette-text-tertiary: hsl(215, 15%, 65%);
+    --app-palette-text-secondary: hsl(215, 15%, 75%);
+    --app-palette-divider: hsla(210, 14%, 28%, 0.3);
+    --app-palette-background-footer: #3b82f680;
+
+    --app-pallete-nav-item-hover-background: hsla(210, 14%, 13%, 0.8);
+}
+
+body {
+    background-color: var(--app-palette-background-default);
+    color: var(--app-palette-text-tertiary);
+    margin: 0;
+    min-height: 100dvh;
+    height: 100dvh;
+}
