@@ -13,6 +13,13 @@ export class AuthController {
     @Post("sign-in")
     async singIn(@Body() credentials: CredentialsDto,@Ip() ip: string, @Headers("user-agent") userAgentString: string, @Headers("x-app-hostname") hostname?: string) {
         const user = await this._users.get(credentials.username);
+        const userAgent = new UAParser(userAgentString);
+        const device = userAgent.getDevice().type ?? "desktop";
+
+        if (!['mobile', 'tablet', 'desktop'].includes(device)){
+            throw new HttpException("Dispositivos no permitidos", 400);
+        }
+
         if (!user) {
             throw new HttpException({ message: "Usuario no encontrado.", code: 1 }, 400)
         }
@@ -21,7 +28,6 @@ export class AuthController {
             throw new HttpException("Contraseña incorrecta.", 400);
         }
 
-        const userAgent = new UAParser(userAgentString);
         let exp: Date | null = null;
         const cli = userAgent.getBrowser().name ? false : true;
 
@@ -33,7 +39,7 @@ export class AuthController {
         const token = await this._tokens.create({
             userId: user.id,
             type: cli ? "cli" : "web",
-            device: userAgent.getDevice().type ?? "desktop",
+            device: device as "desktop" | "mobile" | "tablet",
             ip,
             exp,
             hostname: hostname ?? "website",
