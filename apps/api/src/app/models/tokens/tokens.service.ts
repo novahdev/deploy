@@ -21,7 +21,7 @@ export class TokensService {
         }
     }
 
-    public async create(data: { userId: string, type: "cli" | "web", hostname: string, ip: string, device: string, platform: string | null, exp: Date | null }): Promise<IToken> {
+    public async create(data: { userId: string, type: "cli" | "web", hostname: string, ip: string, device: "desktop" | "mobile" | "tablet", platform: string | null, exp: Date | null }): Promise<IToken> {
         const token: ITokenPlaintData = {
             id: crypto.randomUUID(),
             createdAt: new Date().toISOString(),
