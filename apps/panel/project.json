@@ -60,7 +60,8 @@
         },
         "development": {
           "buildTarget": "panel:build:development",
-          "port": 2026
+          "port": 2026,
+          "proxyConfig": "apps/panel/proxy.config.json"
         }
       },
       "defaultConfiguration": "development"
