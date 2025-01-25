@@ -5,7 +5,7 @@ export interface ITokenPlaintData {
     type: "cli" | "web";
     hostname: string;
     ip: string;
-    device: string;
+    device: "desktop" | "mobile" | "tablet";
     platform: string | null;
     exp: string | null
 }
@@ -17,7 +17,7 @@ export interface IToken {
     type: "cli" | "web";
     hostname: string;
     ip: string;
-    device: string;
+    device: "desktop" | "mobile" | "tablet";
     platform: string | null;
     exp: Date | null
 }
