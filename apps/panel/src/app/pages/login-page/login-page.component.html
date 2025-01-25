@@ -20,7 +20,7 @@
             </nz-form-item>
         </form>
         <div style="display: flex; flex-direction: column;">
-            <button nz-button nzType="primary"  (click)="onSignIn()" [nzLoading]="loading()">Iniciar sesión</button>
+            <button nz-button nzType="primary"  (click)="onSignIn()" [disabled]="disableButtonSignal()" [nzLoading]="loading()">Iniciar sesión</button>
         </div>
     </div>
 </section>

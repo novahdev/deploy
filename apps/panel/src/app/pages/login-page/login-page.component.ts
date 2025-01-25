@@ -26,6 +26,7 @@ export class LoginPageComponent {
   private readonly _authService = inject(AuthService);
 
   protected readonly loading = signal<boolean>(false);
+  protected readonly disableButtonSignal = signal<boolean>(true);
 
   protected readonly form = new FormGroup({
     username: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
@@ -34,10 +35,10 @@ export class LoginPageComponent {
 
   constructor(){
     this.form.statusChanges.subscribe(status => {
-      if (status === 'VALID') {
-        this.loading.set(false);
+      if (status === "VALID") {
+        this.disableButtonSignal.set(false);
       } else {
-        this.loading.set(true);
+        this.disableButtonSignal.set(true);
       }
     })
   }
@@ -51,12 +52,15 @@ export class LoginPageComponent {
 
     const formValues = this.form.getRawValue();
     this.form.disable();
+    this.loading.set(true);
     this._authService.signIn(formValues.username, formValues.password)
     .then(() => {
+      this.loading.set(false);
       this.form.enable();
       this._router.navigate(['/']);
     })
     .catch((err: HttpErrorResponse) => {
+      this.loading.set(false);
       if (err.error?.message) {
         this._nzMessage.error(err.error.message);
       } else {
