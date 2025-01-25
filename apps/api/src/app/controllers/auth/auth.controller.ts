@@ -5,13 +5,14 @@ import { AppSession, Authenticated, AuthGuard } from '@deploy/api/auth';
 import { verify } from 'argon2';
 import { UAParser } from 'ua-parser-js';
 import { CredentialsDto } from './dto';
+import { ApiAuthResponse } from '@deploy/schemas/api';
 
 @Controller()
 export class AuthController {
     constructor(private readonly _users: UsersService, private readonly _tokens: TokensService) {}
 
     @Post("sign-in")
-    async singIn(@Body() credentials: CredentialsDto,@Ip() ip: string, @Headers("user-agent") userAgentString: string, @Headers("x-app-hostname") hostname?: string) {
+    async singIn(@Body() credentials: CredentialsDto,@Ip() ip: string, @Headers("user-agent") userAgentString: string, @Headers("x-app-hostname") hostname?: string): Promise<ApiAuthResponse> {
         const user = await this._users.get(credentials.username);
         const userAgent = new UAParser(userAgentString);
         const device = userAgent.getDevice().type ?? "desktop";
@@ -57,13 +58,13 @@ export class AuthController {
 
     @UseGuards(AuthGuard)
     @Post("keep-session-open")
-    async keepSessionOpen(@Authenticated() session: AppSession){
+    async keepSessionOpen(@Authenticated() session: AppSession): Promise<void> {
         await session.keepSessionOpen();
     }
     
     @UseGuards(AuthGuard)
     @Post("logout")
-    async logout(@Authenticated() session: AppSession){
+    async logout(@Authenticated() session: AppSession): Promise<void> {
         await session.logout();
     }
 }
