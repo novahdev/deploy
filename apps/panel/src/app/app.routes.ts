@@ -5,5 +5,8 @@ export const appRoutes: Route[] = [
     {
         path: '',
         loadComponent: () => import('./layout/layout.component').then(m => m.LayoutComponent),
+        children: [
+            { path: 'profile', loadComponent: () => import('./pages/profile-page/profile-page.component').then(m => m.ProfilePageComponent) },
+        ]
     }
 ];
