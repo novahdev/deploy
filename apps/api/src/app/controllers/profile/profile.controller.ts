@@ -4,6 +4,7 @@ import { Body, Controller, Delete, Get, HttpException, Param, Put, UseGuards } f
 import { UpdatePasswordDto, UpdateProfileDto } from './dto';
 import { verify } from 'argon2';
 import { TokensService } from '@deploy/api/models/tokens';
+import { ApiAccessTokensResponse, ApiProfileGetInfoResponse, ApiResponse } from '@deploy/schemas/api';
 
 @UseGuards(AuthGuard)
 @Controller('profile')
@@ -12,7 +13,7 @@ export class ProfileController {
     constructor(private readonly _users: UsersService, private readonly _tokens: TokensService){}
 
     @Get()
-    async getInfo(@Authenticated("user") user: IUserPlaintData): Promise<{ data: { role: string, name: string, email: string } }>{
+    async getInfo(@Authenticated("user") user: IUserPlaintData): Promise<ApiProfileGetInfoResponse>{
         return {
             data: {
                 role: user.role,
@@ -28,7 +29,7 @@ export class ProfileController {
     }
 
     @Put(":password")
-    async password(@Authenticated("user") user: IUserPlaintData, @Body() update: UpdatePasswordDto): Promise<{ message: string }> {
+    async password(@Authenticated("user") user: IUserPlaintData, @Body() update: UpdatePasswordDto): Promise<ApiResponse> {
         if (!(await verify(user.password, update.password))){
             throw new HttpException("Tu contraseña es incorrecta.", 400);
         }
@@ -39,12 +40,12 @@ export class ProfileController {
     }
 
     @Get("access-tokens")
-    async getAccessTokens(@Authenticated() session: AppSession){
+    async getAccessTokens(@Authenticated() session: AppSession): Promise<ApiAccessTokensResponse>{
         const list = (await this._tokens.getAll({ userId: session.id }))
         .map(token => {
             return {
                 id: token.id,
-                createdAt: token.createdAt.toISOString(),
+                created_at: token.createdAt.toISOString(),
                 type: token.type,
                 hostname: token.hostname,
                 ip: token.ip,
