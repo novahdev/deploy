@@ -1,5 +1,5 @@
 import { Component, inject, OnDestroy, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { NzDrawerModule, NzDrawerService } from 'ng-zorro-antd/drawer'
 import { AuthService } from '../auth/auth.service';
 import { DrawerUserMenuComponent } from '../ui/drawer-user-menu/drawer-user-menu.component';
@@ -9,7 +9,8 @@ import { Subscription } from 'rxjs';
   selector: 'app-layout',
   imports: [
     RouterOutlet,
-    NzDrawerModule
+    RouterLink,
+    NzDrawerModule,
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
