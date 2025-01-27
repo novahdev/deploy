@@ -1,0 +1,31 @@
+<section>
+    <button nz-button (click)="onAddUserClick()" [disabled]="disabled()">Crear usuario</button>
+    <button nz-button (click)="onRefreshClick()" [disabled]="disabled()">Refrescar lista</button>
+</section>
+<ul class="users-list">
+    @for (item of users(); track $index) {
+        <li >
+            <div class="info">
+                <div>
+                    {{ item.name }}
+                </div>
+                <div>
+                    {{ item.email }}
+                </div>
+            </div>
+            <div>
+                <button nz-button nzType="text"  nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" [disabled]="disabled()">
+                    Actions
+                </button>
+            </div>
+        </li>
+
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+            <ul nz-menu>
+              <li nz-menu-item (click)="onEditUserClick(item)" aria-hidden="true">Editar</li>
+              <li nz-menu-item nzDisabled>Bloquear</li>
+              <li nz-menu-item (click)="onDeleteUserClick(item)" aria-hidden="true">Eliminar</li>
+            </ul>
+        </nz-dropdown-menu>
+    }
+</ul>
