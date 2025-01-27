@@ -1,0 +1,32 @@
+<header>
+    <h3>Seguridad</h3>
+    <button nz-button disabled>Cerrar todas las sesiones</button>
+    <button nz-button (click)="onClickUpdatePassword()">Actualizar contraseña</button>
+</header>
+<section>
+    <ul>
+        @for (item of accessTokens(); track $index; let first = $first;) {
+            <li>
+                <div class="info">
+                    <div class="device">
+                        <i [classList]="'icon-' + item.device"></i>
+                    </div>
+                    <div>
+                        {{ item.createdAt | date: 'dd/MM/yyyy' }}
+                    </div>
+                    <div>
+                        {{ item.hostname }}
+                    </div>
+                    <div>
+                        {{ item.platform }}
+                    </div>
+                </div>
+                <div class="actions">
+                    <button nz-button nzType="text" (click)="onClickDeleteAccessToken(item.id)" [disabled]="first">
+                        Eliminar
+                    </button>
+                </div>
+            </li>
+        }
+    </ul>
+</section>
