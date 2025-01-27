@@ -8,6 +8,11 @@ export interface ApiProfileGetInfoResponse extends ApiResponse {
     }
 }
 
+export interface ApiProfileUpdateBody {
+    name: string
+    email: string
+}   
+
 export interface ApiAccessTokensResponse extends ApiResponse {
     data: {
         id: string,
