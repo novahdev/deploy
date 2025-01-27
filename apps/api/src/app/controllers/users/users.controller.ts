@@ -3,6 +3,8 @@ import { UserPipe, UsersService, User } from '@deploy/api/models/users';
 import { Body, Controller, Delete, Get, HttpException, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ApiUsersResponse } from '@deploy/schemas/api';
+import { capitalize } from '@deploy/core/utils/capitalize';
 
 @UseGuards(AuthGuard)
 @Admin()
@@ -11,13 +13,13 @@ export class UsersController {
     constructor(private readonly _users: UsersService){}
 
     @Get()
-    async getAll(@Authenticated() session: AppSession){
+    async getAll(@Authenticated() session: AppSession): Promise<ApiUsersResponse>{
         const users = await this._users.getAll({ ignore: session.id });
 
         return {
             data: users.map(user => ({
                 id: user.id,
-                createdAt: user.createdAt,
+                created_at: user.createdAt,
                 role: user.role,
                 name: user.name,
                 email: user.email
@@ -50,7 +52,7 @@ export class UsersController {
         }
         const user = await  this._users.create({
             role: "collaborator",
-            name: body.name,
+            name: capitalize(body.name),
             email: body.email,
             password: body.password
         });

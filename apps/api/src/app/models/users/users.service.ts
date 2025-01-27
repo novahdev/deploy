@@ -4,6 +4,7 @@ import { IUserPlaintData, IUserUpdate, IUserUpdatePlaint } from './user.interfac
 import { isUUID } from 'class-validator';
 import { hash } from 'argon2';
 import { User } from './user.model';
+import { capitalize } from '@deploy/core/utils/capitalize';
 
 @Injectable()
 export class UsersService {
@@ -53,7 +54,7 @@ export class UsersService {
         const update: IUserUpdatePlaint = {};
         const updateAt = new Date();
         if (data.email) update.email = data.email.toLowerCase();
-        if (data.name) update.name = data.name;
+        if (data.name) update.name = capitalize(data.name);
         if (data.role) update.role = data.role;
         if (data.password) update.password = await hash(data.password);
         update.updatedAt = updateAt.toISOString()
