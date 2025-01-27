@@ -35,7 +35,7 @@ body {
   i {
     /* use !important to prevent issues with browser extensions that change fonts */
     font-family: 'icomoon' !important;
-    // speak: never;
+    speak: never;
     font-style: normal;
     font-weight: normal;
     font-variant: normal;
@@ -47,6 +47,15 @@ body {
     -moz-osx-font-smoothing: grayscale;
   }
   
+  .icon-desktop:before {
+    content: "\e907";
+  }
+  .icon-mobile:before {
+    content: "\e908";
+  }
+  .icon-tablet:before {
+    content: "\e909";
+  }
   .icon-docker:before {
     content: "\e905";
   }
