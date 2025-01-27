@@ -1,0 +1,43 @@
+<div style="display: flex; flex-direction: column; row-gap: 1em;">
+    @if (editProfile()) {
+        <form nz-form nzLayout="vertical" [formGroup]="form">
+            <div style="display: flex; gap: 1em;">
+                <nz-form-item>
+                    <nz-form-label>
+                        Nombre
+                    </nz-form-label>
+                    <nz-form-control>
+                        <input nz-input formControlName="name"/>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label>
+                        Correo electrónico
+                    </nz-form-label>
+                    <nz-form-control>
+                        <input nz-input formControlName="email"/>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div style="display: flex; column-gap: 1em;">
+                <button nz-button type="button" (click)="onClickCancelEditProfile()">Descartar cambios</button>
+                <button nz-button type="button" (click)="onClickSaveProfile()">Guardar cambios</button>
+            </div>
+        </form>
+       
+    }@else { 
+        <div style="display: flex; gap: 2em;">
+            <div class="item">
+                <div class="field">Nombre</div>
+                <div class="text">{{data().name}}</div>
+            </div>
+            <div class="item">
+                <div class="field">Correo electrónico</div>
+                <div class="text">{{data().email}}</div>
+            </div>
+        </div>
+        <div>
+            <button nz-button (click)="onClickEditProfile()">Editar</button>
+        </div>
+    }
+</div>
