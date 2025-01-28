@@ -1,5 +1,6 @@
 import { Framework, FRAMEWORK_LIST, RUNNING_ON_LIST, RunningOn, RUNTIME_ENVIRONMENT_LIST, RuntimeEnvironment } from "@deploy/schemas/projects"
 import { IsIn, IsNotEmpty, IsObject, IsOptional, IsString, IsUrl } from "class-validator"
+import { Expose } from 'class-transformer';
 
 export class ProjectCreateDto {
     @IsString()
@@ -22,6 +23,7 @@ export class ProjectCreateDto {
     location: string
 
     @IsString()
+    @Expose({ name: 'startup_file' })
     startupFile: string
 
     @IsIn(FRAMEWORK_LIST)
@@ -30,10 +32,12 @@ export class ProjectCreateDto {
 
     @IsIn(RUNNING_ON_LIST)
     @IsOptional()
+    @Expose({ name: 'running_on' })
     runningOn?: RunningOn | null;
 
     @IsIn(RUNTIME_ENVIRONMENT_LIST)
     @IsOptional()
+    @Expose({ name: 'runtime_environment' })
     runtimeEnvironment?: RuntimeEnvironment | null;
 
     @IsUrl()
