@@ -83,17 +83,17 @@ export class ProjectsService {
         const values: ProjectUpdateValuesPlaint = {};
         if (data.domain)  values.domain = data.domain.trim();
         if (data.name) values.name = data.name.trim();
-        if (data.version) values.version = data.version;
+        if (data.version !== undefined) values.version = data.version;
         if (data.processName) values.processName = data.processName.trim();
         if (data.startupFile) values.startupFile = data.startupFile;
         if (data.location) values.location = data.location;
-        if (data.framework) values.version = data.version;
-        if (data.runningOn) values.runningOn = data.runningOn;
-        if (data.runtimeEnvironment) values.runtimeEnvironment = data.runtimeEnvironment;
-        if (data.url) values.url = data.url;
+        if (data.framework !== undefined) values.framework = data.framework;
+        if (data.runningOn !== undefined) values.runningOn = data.runningOn;
+        if (data.runtimeEnvironment !== undefined) values.runtimeEnvironment = data.runtimeEnvironment;
+        if (data.url !== undefined) values.url = data.url;
         if (data.env) values.env = data.env ? JSON.stringify(data.env) : undefined;
         if (data.ignore) values.ignore = data.ignore ? JSON.stringify(data.ignore) : undefined;
-        if (data.observation) values.observation = data.observation;
+        if (data.observation !== undefined) values.observation = data.observation;
         if (data.repository) values.repository = data.repository ? JSON.stringify(data.repository) : undefined;
 
         const sql = `UPDATE projects SET ${Object.keys(values).map(x => `${x} = ?`).join(", ")} WHERE id = ?`;
