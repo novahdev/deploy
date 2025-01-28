@@ -10,27 +10,3 @@ export interface Repository {
     branch?: string; // Rama opcional
     commit?: string; // Último commit opcional
   }
-
-export interface ApiProjectRaw {
-    "id": string,
-    "created_at": string,
-    "updated_at": string,
-    "deploy_at": string | null,
-    "status":ProjectStatus,
-    "is_online": boolean,
-    "domain": string,
-    "name": string,
-    "process_name": string,
-    "version": string | null,
-    "location": string,
-    "startup_file": string,
-    "framework": Framework | null,
-    "running_on": RunningOn | null,
-    "runtime_environment": RuntimeEnvironment | null,
-    "url": string | null,
-    "repository": Repository | null,
-    "env": { [key: string]: string },
-    "ignore": string[],
-    "observation": string | null,
-    "permissions": string[]
-}
