@@ -1,0 +1,14 @@
+:host {
+    display: block;
+    width: 1.8em;
+    height: 1.8em;
+    background-color: red;
+    border-radius: 50%;
+    &.stopped {
+        background-color: yellow;
+    } 
+
+    &.running {
+        background-color: green;
+    }
+}

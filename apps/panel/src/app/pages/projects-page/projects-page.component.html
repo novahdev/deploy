@@ -1,0 +1,30 @@
+<header>
+    <button nz-button (click)="onClickRefresh()" [disabled]="disabledButtons()">Refrescar lista</button>
+    <button nz-button routerLink="new" [disabled]="disabledButtons()">Agregar proyecto</button>
+</header>
+<ul class="projects-list">
+
+    @for (item of projects(); track $index) {
+        <li>
+            <div class="status">
+                <app-status-project-icon [status]="item.status"/>
+                <!-- <div class="icon" [class.running]="item.status === 'running'"></div> -->
+            </div>
+            <div class="info">
+                <div class="name">{{ item.name }}</div>
+            </div>
+            <div>
+                <button nz-button nzType="text" nz-dropdown [nzDropdownMenu]="menu" nzTrigger="click">Mas</button>
+            </div>
+        </li>
+
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+            <ul nz-menu>
+                <li nz-menu-item  [routerLink]="item.id">
+                    Ver información
+                </li>
+            </ul>
+        </nz-dropdown-menu>
+    }
+
+</ul>

@@ -1,0 +1,90 @@
+<header>
+    <div class="status">
+        <app-status-project-icon [status]="project()?.status ?? 'errored'" diameter="1.8em"/>
+    </div>
+    <h1>{{ project()?.name ?? "Cargando..." }}</h1>
+    <div class="actions">
+        @if (editMode()) {
+            <button nz-button (click)="onClickEditCancel()">Descartar cambios</button>
+            <button nz-button nzType="primary" (click)="onClickSave()">Guardar cambios</button>
+        } @else {
+            @if (buttonsControl()) {
+                @if (project()?.status === 'running') {
+                    <button nz-button (click)="onRestartProject()">Reiniciar</button>
+                    <button nz-button (click)="onStopProject()">Detener</button>
+                } @else {
+                    <button nz-button (click)="onRunProject()">Iniciar</button>
+                }
+            }
+            <button nz-button (click)="onClickEdit()" [disabled]="loading()">Editar</button>
+            <button nz-button nz-dropdown [nzDropdownMenu]="menu" nzTrigger="click" [disabled]="loading()">Mas acciones</button>
+        }
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+            <ul nz-menu>
+                <li nz-menu-item nzDisabled>Bloquear</li>
+                <li nz-menu-item aria-hidden="true" (click)="onDeleteProject()">Eliminar</li>
+            </ul>
+        </nz-dropdown-menu>
+    </div>
+</header>
+
+<section>
+    @if (editMode()) {
+        <app-project-form [project]="project()"/>
+    } @else { 
+        <div style="display: flex; flex-direction: column; row-gap: 1em;">
+            <div style="display: flex; column-gap: 1em;">
+                <div class="info-item">
+                    <div class="field"> Dominio </div>
+                    <div class="value">{{ project()?.domain ?? "Cargando..." }}</div>
+                </div>
+
+                @if (project()?.url) {
+                    <div class="info-item">
+                        <div class="field"> URL </div>
+                        <div class="value">{{ project()?.url ?? "Cargando..." }}</div>
+                    </div>
+                }
+            </div>
+            <div class="info">
+                
+                <div class="info-item">
+                    <div class="field"> Nombre de proceso </div>
+                    <div class="value">{{ project()?.processName ?? "Cargando..." }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="field">Framework</div>
+                    <div class="value">{{ project()?.framework ?? "Cargando..." }}</div>
+                </div>
+
+                @if (project()?.runtimeEnvironment){
+                    <div class="info-item">
+                        <div class="field">Entorno de ejecución</div>
+                        <div class="value">{{ project()?.runtimeEnvironment ?? "Cargando..." }}</div>
+                    </div>
+                }
+
+                @if (project()?.runningOn) {
+                    <div class="info-item">
+                        <div class="field">Ejecutándose en </div>
+                        <div class="value">{{ project()?.runningOn ?? "Cargando..." }}</div>
+                    </div>
+                }
+
+                <div class="info-item">
+                    <div class="field">Archivo de arranque</div>
+                    <div class="value">{{ project()?.startupFile ?? "Cargando..." }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="field">Ubicación</div>
+                    <div class="value">{{ project()?.location ?? "Cargando..." }}</div>
+                </div>
+            </div>
+        </div>
+    }
+</section>
+
+<section>
+    <app-projects-users-with-access [project]="project()"/>
+</section>

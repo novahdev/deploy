@@ -1,0 +1,13 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1em;
+}
+header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    h1 {
+        margin: 0;
+    }
+}
