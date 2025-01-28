@@ -167,6 +167,8 @@ export class ProjectsController {
             if (process){
                 if (process.pm2_env.status === "online"){
                     throw new HttpException("El proceso ya esta en ejecución.", 400);
+                } else {
+                    this._pm2.reload(project.processName, project.location, project.env);
                 }
             } else {
                 this._pm2.start(project.location, project.startupFile, project.processName, project.env);
@@ -213,6 +215,33 @@ export class ProjectsController {
             throw new HttpException("El proceso no existe.", 400);
         } else if (project.runningOn === null) {
             throw new HttpException("El proyecto no se puede detener.", 400);
+        }
+        throw new HttpException(`No hay soporte para aplicaciones ejecutadas en ${project.runningOn}.`, 500);
+    }
+
+    @Post(":id/restart")
+    async restartProject(@Authenticated() session: AppSession, @Param("id", ProjectPipe) project: IProject) {
+        if (session.role !== "admin"){
+            throw new HttpException("No tienes permisos para recargar el proyecto", 403);
+        }
+
+        if (project.runningOn === "PM2"){
+            if (!this._pm2.installed()){
+                throw new HttpException("PM2 no esta instalado en el servidor.", 500);
+            }
+            const process = this._pm2.getAll().find(x => x.name === project.processName);
+            if (process){
+                if (process.pm2_env.status === "online"){
+                    this._pm2.reload(project.processName, project.location, project.env);
+                    return {
+                        message: "Proyecto recargado.",
+                    }
+                }
+                throw new HttpException("El proceso no esta en ejecución.", 400);
+            }
+            throw new HttpException("El proceso no existe.", 400);
+        } else if (project.runningOn === null) {
+            throw new HttpException("El proyecto no se puede recargar.", 400);
         }
         throw new HttpException(`No hay soporte para aplicaciones ejecutadas en ${project.runningOn}.`, 500);
     }
