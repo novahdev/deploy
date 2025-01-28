@@ -134,7 +134,7 @@ export class ProjectsController {
     }
 
     @Delete(":id")
-    async deleteProject(@Authenticated() session: AppSession, @Param(":id", ProjectPipe) project: IProject) {
+    async deleteProject(@Authenticated() session: AppSession, @Param("id", ProjectPipe) project: IProject) {
         if (session.role !== "admin"){
             throw new HttpException("No tienes permisos para eliminar el proyecto", 403);
         }
