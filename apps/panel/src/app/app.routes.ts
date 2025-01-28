@@ -11,6 +11,8 @@ export const appRoutes: Route[] = [
             { path: 'projects', loadComponent: () => import('./pages/projects-page/projects-page.component').then(m => m.ProjectsPageComponent) },
             { path: 'projects/new', loadComponent: () => import('./pages/project-new-page/project-new-page.component').then(m => m.ProjectNewPageComponent) },
             { path: 'projects/:projectId', loadComponent: () => import('./pages/project-page/project-page.component').then(m => m.ProjectPageComponent) },
+            { path: 'pm2', loadComponent: () => import('./pages/pm2-dashboard-page/pm2-dashboard-page.component').then(m => m.Pm2DashboardPageComponent) },
+            { path: 'docker', loadComponent: () => import('./pages/docker-dashboard-page/docker-dashboard-page.component').then(m => m.DockerDashboardPageComponent) },
         ]
     }
 ];
