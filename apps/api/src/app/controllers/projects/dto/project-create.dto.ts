@@ -13,6 +13,7 @@ export class ProjectCreateDto {
 
     @IsString()
     @IsNotEmpty()
+    @Expose({ name: 'process_name' })
     processName: string
 
     @IsString()
