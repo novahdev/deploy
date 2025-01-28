@@ -5,7 +5,7 @@ import { ProjectCreateDto } from './dto';
 import { ProjectUpdateDto } from './dto/project-update.dto';
 import { Pm2Process, Pm2Service } from '@deploy/api/common/pm2';
 import { isApplicationOnline } from '@deploy/api/utils';
-import { ApiProjectRaw } from '@deploy/schemas/projects';
+import { ApiProjectRaw } from '@deploy/schemas/api';
 import { join } from 'path';
 import { existsSync } from 'fs';
 
@@ -125,12 +125,11 @@ export class ProjectsController {
         if (session.role !== "admin"){
             throw new HttpException("No tienes permisos para actualizar el proyecto", 403);
         }
-
         await this.nameAndProcessNameAvailable({ name: { domain: body.domain ?? project.domain, value: body.name ?? project.name }, processName: body.processName, ignore: project.id });
 
         await this._projects.update(project.id, body);
         return {
-            data: null
+            data: this.parseData(((await this._projects.get(project.id)) as IProject))
         }
     }
 
