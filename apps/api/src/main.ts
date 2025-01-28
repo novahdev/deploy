@@ -5,7 +5,7 @@
 
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { ResponseInterceptor } from '@deploy/api/config';
@@ -28,6 +28,7 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter(app.get(ConfigService)));
   app.useGlobalInterceptors(new ResponseInterceptor(app.get(ConfigService)));
   app.setGlobalPrefix(globalPrefix);
+  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
   const port = process.env.PORT || 2025;
   await app.listen(port);
   Logger.log(
