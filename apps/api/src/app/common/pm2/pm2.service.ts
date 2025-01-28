@@ -60,8 +60,7 @@ export class Pm2Service {
     }
     
     get(value: number | string): Pm2Process | undefined {
-        const result = this.getAll();
-        const list: Pm2Process[] =  JSON.parse(result.toString());
+        const list = this.getAll();
         return list.find(x => typeof value === "string" ? x.name == value : x.pm_id == value);
 
     }
