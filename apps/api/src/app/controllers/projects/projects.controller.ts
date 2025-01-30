@@ -8,6 +8,7 @@ import { isApplicationOnline } from '@deploy/api/utils';
 import { ApiProjectRaw } from '@deploy/schemas/api';
 import { join } from 'path';
 import { existsSync } from 'fs';
+import { exec, execSync } from 'child_process';
 
 @UseGuards(AuthGuard)
 @Controller('projects')
@@ -152,9 +153,24 @@ export class ProjectsController {
         }
 
         if (project.runningOn === "PM2"){
+            if (!existsSync(join(project.location, "node_modules"))){
+                try {
+                    execSync("npm install", { cwd: project.location });
+                } catch (error) {
+                    
+                    throw new HttpException({ 
+                        message: "Dependencias no instaladas.",
+                        details: [ 
+                            `Ejecuta "npm install" en la carpeta "${project.location}".`,
+                            error.message
+                        ]
+                    }, 500);
+                }
+            }
             if (!this._pm2.installed()){
                 throw new HttpException("PM2 no esta instalado en el servidor.", 500);
             }
+
             const startupFilePath = join(project.location, project.startupFile);
             if (!existsSync(startupFilePath)){
                 throw new HttpException({ 
@@ -237,7 +253,10 @@ export class ProjectsController {
                         message: "Proyecto recargado.",
                     }
                 }
-                throw new HttpException("El proceso no esta en ejecución.", 400);
+                throw new HttpException({
+                    message: "El proceso no esta en ejecución.",
+                    details: [ `El proceso "${project.processName}" no esta en ejecución.`]
+                }, 400);
             }
             throw new HttpException("El proceso no existe.", 400);
         } else if (project.runningOn === null) {
