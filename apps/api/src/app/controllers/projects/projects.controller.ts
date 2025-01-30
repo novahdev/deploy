@@ -8,7 +8,7 @@ import { isApplicationOnline } from '@deploy/api/utils';
 import { ApiProjectRaw } from '@deploy/schemas/api';
 import { join } from 'path';
 import { existsSync } from 'fs';
-import { exec, execSync } from 'child_process';
+import { execSync } from 'child_process';
 
 @UseGuards(AuthGuard)
 @Controller('projects')
